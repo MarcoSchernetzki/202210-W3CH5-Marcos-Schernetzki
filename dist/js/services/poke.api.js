@@ -1,6 +1,6 @@
 export class PokeApi {
     constructor() {
-        this.url = 'https://pokeapi.co/api/v2/pokemon';
+        this.url = 'https://pokeapi.co/api/v2/pokemon/';
     }
     // read / get
     getPoke() {
