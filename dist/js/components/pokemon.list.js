@@ -31,7 +31,7 @@ export class PokemonList extends Component {
     }
     manageComponent() {
         this.template = this.createTemplate();
-        this.render(this.selector, this.template);
+        this.renderAdd(this.selector, this.template);
     }
     createTemplate() {
         this.template = '';
