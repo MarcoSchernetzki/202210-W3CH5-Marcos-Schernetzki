@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { PokeApi } from '../services/poke.api.js';
 import { Component } from './component.js';
+// import { Pagination } from './pagination.js';
 export class PokemonList extends Component {
     constructor(selector) {
         super();
@@ -16,9 +17,9 @@ export class PokemonList extends Component {
         this.api = new PokeApi();
         this.pokes = '';
         this.pokesInfo = [];
-        this.startPrint();
+        this.startFetch();
     }
-    startPrint() {
+    startFetch() {
         return __awaiter(this, void 0, void 0, function* () {
             this.pokes = yield this.api.getPoke();
             const pokeArray = [];
@@ -26,21 +27,44 @@ export class PokemonList extends Component {
                 pokeArray.push(item.url);
             });
             this.pokesInfo = yield Promise.all(pokeArray.map((url) => fetch(url).then((result) => result.json())));
+            console.log(this.pokesInfo);
+            //------------------------------------------------------------------------
+            this.nextPageInfo = yield this.api.getNextPage(this.pokes.next);
+            const nextPokeArray = [];
+            this.nextPageInfo.results.forEach((item) => {
+                nextPokeArray.push(item.url);
+            });
+            this.nextPagePokes = yield Promise.all(nextPokeArray.map((url) => fetch(url).then((result) => result.json())));
             this.manageComponent();
         });
     }
     manageComponent() {
-        this.template = this.createTemplate();
+        var _a;
+        this.template = this.createTemplate(this.pokesInfo);
         this.renderAdd(this.selector, this.template);
+        (_a = document.querySelector('.btn-next')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
+            console.log(this.nextPagePokes);
+            this.template = this.createTemplate(this.nextPagePokes);
+            this.render(this.selector, this.template);
+        });
     }
-    createTemplate() {
+    createTemplate(array) {
         this.template = '';
-        this.pokesInfo.forEach((pokemon) => {
+        array.forEach((pokemon) => {
             this.template += ` <div class="main">
             <h2>${pokemon.name}</h2>`;
             this.template += `<img src="${pokemon.sprites.other.home.front_default}" alt="">
             </div>`;
         });
+        this.template += `
+        <button class="btn-previous">
+         <a href=''>Atras</a>
+        </button>
+                          
+        <button class="btn-next">
+     
+          Siguiente
+         </button>`;
         return this.template;
     }
 }

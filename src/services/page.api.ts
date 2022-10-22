@@ -1,19 +1,18 @@
 import { IPoke } from '../models/poke.js';
 
-export class PokeApi {
+export class PageApi {
     url: string;
+    i!: number;
+    pokes: any;
 
     constructor() {
-        this.url = 'https://pokeapi.co/api/v2/pokemon/';
+        this.pokes = '';
+        this.url = this.pokes.next;
     }
 
     // read / get
-    getPoke(): Promise<Array<IPoke>> {
+    getPage(): Promise<Array<IPoke>> {
         return fetch(this.url).then((response) => response.json());
-    }
-
-    getNextPage(nextUrl: string): Promise<any> {
-        return fetch(nextUrl).then((response) => response.json());
     }
 
     // manageComponent() {

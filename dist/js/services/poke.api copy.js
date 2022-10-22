@@ -6,7 +6,4 @@ export class PokeApi {
     getPoke() {
         return fetch(this.url).then((response) => response.json());
     }
-    getNextPage(nextUrl) {
-        return fetch(nextUrl).then((response) => response.json());
-    }
 }
