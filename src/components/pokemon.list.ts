@@ -5,15 +5,29 @@ export class PokemonList extends Component {
     template!: string;
     pokes: any;
     api: PokeApi;
+    pokesInfo: Array<T>;
     constructor(public selector: string) {
         super();
         this.api = new PokeApi();
         this.pokes = '';
+        this.pokesInfo = [];
         this.startPrint();
     }
 
     async startPrint() {
         this.pokes = await this.api.getPoke();
+
+        const pokeArray: any = [];
+
+        this.pokes.results.forEach((item: any) => {
+            pokeArray.push(item.url);
+        });
+
+        this.pokesInfo = await Promise.all(
+            pokeArray.map((url: any) =>
+                fetch(url).then((result) => result.json())
+            )
+        );
         this.manageComponent();
     }
 
@@ -25,8 +39,9 @@ export class PokemonList extends Component {
     createTemplate() {
         this.template = '';
 
-        this.pokes.results.forEach((pokemon: any) => {
-            this.template += `<h1>${pokemon.name}</h1>`;
+        this.pokesInfo.forEach((pokemon: any) => {
+            this.template += `<h2>${pokemon.name}</h2>`;
+            this.template += `<img src="${pokemon.sprites.other.home.front_default}" alt="" widht="100">`;
         });
 
         return this.template;

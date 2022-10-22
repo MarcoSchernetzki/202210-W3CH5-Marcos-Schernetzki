@@ -15,11 +15,17 @@ export class PokemonList extends Component {
         this.selector = selector;
         this.api = new PokeApi();
         this.pokes = '';
+        this.pokesInfo = [];
         this.startPrint();
     }
     startPrint() {
         return __awaiter(this, void 0, void 0, function* () {
             this.pokes = yield this.api.getPoke();
+            const pokeArray = [];
+            this.pokes.results.forEach((item) => {
+                pokeArray.push(item.url);
+            });
+            this.pokesInfo = yield Promise.all(pokeArray.map((url) => fetch(url).then((result) => result.json())));
             this.manageComponent();
         });
     }
@@ -29,8 +35,9 @@ export class PokemonList extends Component {
     }
     createTemplate() {
         this.template = '';
-        this.pokes.results.forEach((pokemon) => {
-            this.template += `<h1>${pokemon.name}</h1>`;
+        this.pokesInfo.forEach((pokemon) => {
+            this.template += `<h2>${pokemon.name}</h2>`;
+            this.template += `<img src="${pokemon.sprites.other.home.front_default}" alt="" widht="100">`;
         });
         return this.template;
     }
