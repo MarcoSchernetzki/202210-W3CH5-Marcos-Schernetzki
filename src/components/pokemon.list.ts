@@ -30,7 +30,6 @@ export class PokemonList extends Component {
                 fetch(url).then((result) => result.json())
             )
         );
-        console.log(this.pokesInfo);
 
         //------------------------------------------------------------------------
         this.nextPageInfo = await this.api.getNextPage(this.pokes.next);
@@ -62,16 +61,17 @@ export class PokemonList extends Component {
     }
 
     createTemplate(array: Array<any>) {
-        this.template = '';
+        this.template = `<div class="main_cards">`;
 
         array.forEach((pokemon: any) => {
-            this.template += ` <div class="main">
+            this.template += ` <div class="cards--poke">
             <h2>${pokemon.name}</h2>`;
             this.template += `<img src="${pokemon.sprites.other.home.front_default}" alt="">
             </div>`;
         });
 
-        this.template += `
+        this.template += `</div>
+         <div>
         <button class="btn-previous">
          <a href=''>Atras</a>
         </button>
@@ -79,7 +79,8 @@ export class PokemonList extends Component {
         <button class="btn-next">
      
           Siguiente
-         </button>`;
+         </button>
+         </div>`;
 
         return this.template;
     }
