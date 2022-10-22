@@ -27,7 +27,6 @@ export class PokemonList extends Component {
                 pokeArray.push(item.url);
             });
             this.pokesInfo = yield Promise.all(pokeArray.map((url) => fetch(url).then((result) => result.json())));
-            console.log(this.pokesInfo);
             //------------------------------------------------------------------------
             this.nextPageInfo = yield this.api.getNextPage(this.pokes.next);
             const nextPokeArray = [];
@@ -49,14 +48,15 @@ export class PokemonList extends Component {
         });
     }
     createTemplate(array) {
-        this.template = '';
+        this.template = `<div class="main_cards">`;
         array.forEach((pokemon) => {
-            this.template += ` <div class="main">
+            this.template += ` <div class="cards--poke">
             <h2>${pokemon.name}</h2>`;
             this.template += `<img src="${pokemon.sprites.other.home.front_default}" alt="">
             </div>`;
         });
-        this.template += `
+        this.template += `</div>
+         <div>
         <button class="btn-previous">
          <a href=''>Atras</a>
         </button>
@@ -64,7 +64,8 @@ export class PokemonList extends Component {
         <button class="btn-next">
      
           Siguiente
-         </button>`;
+         </button>
+         </div>`;
         return this.template;
     }
 }
