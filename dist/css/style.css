@@ -8,11 +8,27 @@ body {
 }
 header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    padding: 1rem;
+    color:rgb(42, 42, 193)
 }
 header h1 {
     font-size: 0;
+}
+header ul {
+      display: flex;
+      justify-content: flex-end;
+      gap: 20px;
+}
+header li {
+    list-style: none;
+}
+header a {
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    font-size: 20px;
 }
 main {
     display: flex;
