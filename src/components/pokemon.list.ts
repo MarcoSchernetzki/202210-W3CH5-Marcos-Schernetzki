@@ -19,21 +19,20 @@ export class PokemonList extends Component {
     }
 
     async startFetch() {
-        if (!this.pokes) {
-            this.pokes = await this.api.getPoke();
+        this.pokes = await this.api.getPoke();
 
-            const pokeArray: any = [];
+        const pokeArray: any = [];
 
-            this.pokes.results.forEach((item: any) => {
-                pokeArray.push(item.url);
-            });
+        this.pokes.results.forEach((item: any) => {
+            pokeArray.push(item.url);
+        });
 
-            this.pokesInfo = await Promise.all(
-                pokeArray.map((url: any) =>
-                    fetch(url).then((result) => result.json())
-                )
-            );
-        }
+        this.pokesInfo = await Promise.all(
+            pokeArray.map((url: any) =>
+                fetch(url).then((result) => result.json())
+            )
+        );
+
         this.nextFetch();
         this.previousFetch();
         this.manageComponent();
@@ -79,9 +78,11 @@ export class PokemonList extends Component {
         document.querySelector('.btn-next')?.addEventListener('click', () => {
             this.template = this.createTemplate(this.nextPagePokes);
             this.render(this.selector, this.template);
-            this.pokes.next = this.nextPageInfo.next;
+            this.pokes = this.nextPageInfo;
             this.pokesInfo = this.nextPagePokes;
-            this.startFetch();
+            this.nextFetch();
+            this.previousFetch();
+            this.manageComponent();
         });
 
         document
@@ -89,9 +90,10 @@ export class PokemonList extends Component {
             ?.addEventListener('click', () => {
                 this.template = this.createTemplate(this.previousPagePokes);
                 this.render(this.selector, this.template);
-                this.pokes.previous = this.previousPageInfo.previous;
+                this.pokes = this.previousPageInfo;
                 this.pokesInfo = this.previousPagePokes;
-                this.startFetch();
+                this.nextFetch();
+                this.previousFetch();
                 this.manageComponent();
             });
     }
