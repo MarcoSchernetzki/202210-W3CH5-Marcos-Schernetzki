@@ -20,14 +20,12 @@ export class PokemonList extends Component {
     }
     startFetch() {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!this.pokes) {
-                this.pokes = yield this.api.getPoke();
-                const pokeArray = [];
-                this.pokes.results.forEach((item) => {
-                    pokeArray.push(item.url);
-                });
-                this.pokesInfo = yield Promise.all(pokeArray.map((url) => fetch(url).then((result) => result.json())));
-            }
+            this.pokes = yield this.api.getPoke();
+            const pokeArray = [];
+            this.pokes.results.forEach((item) => {
+                pokeArray.push(item.url);
+            });
+            this.pokesInfo = yield Promise.all(pokeArray.map((url) => fetch(url).then((result) => result.json())));
             this.nextFetch();
             this.previousFetch();
             this.manageComponent();
@@ -60,17 +58,20 @@ export class PokemonList extends Component {
         (_a = document.querySelector('.btn-next')) === null || _a === void 0 ? void 0 : _a.addEventListener('click', () => {
             this.template = this.createTemplate(this.nextPagePokes);
             this.render(this.selector, this.template);
-            this.pokes.next = this.nextPageInfo.next;
+            this.pokes = this.nextPageInfo;
             this.pokesInfo = this.nextPagePokes;
-            this.startFetch();
+            this.nextFetch();
+            this.previousFetch();
+            this.manageComponent();
         });
         (_b = document
             .querySelector('.btn-previous')) === null || _b === void 0 ? void 0 : _b.addEventListener('click', () => {
             this.template = this.createTemplate(this.previousPagePokes);
             this.render(this.selector, this.template);
-            this.pokes.previous = this.previousPageInfo.previous;
+            this.pokes = this.previousPageInfo;
             this.pokesInfo = this.previousPagePokes;
-            this.startFetch();
+            this.nextFetch();
+            this.previousFetch();
             this.manageComponent();
         });
     }
