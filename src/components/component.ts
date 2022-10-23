@@ -23,7 +23,7 @@ export abstract class Component {
     }
 }
 
-// export interface IComponent {
-//     createTemplate: () => string;
-//     manageComponent: () => void;
-// }
+export interface IComponent {
+    createTemplate: () => string;
+    manageComponent: () => void;
+}
