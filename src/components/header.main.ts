@@ -5,7 +5,7 @@ interface menuOptionI {
     label: string;
 }
 
-export class Menu extends Component implements IComponent {
+export class Main extends Component implements IComponent {
     template!: string;
     menuOptions: Array<menuOptionI>;
     constructor(public selector: string) {

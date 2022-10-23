@@ -1,5 +1,5 @@
 import { Component } from './component.js';
-export class Menu extends Component {
+export class Main extends Component {
     constructor(selector) {
         super();
         this.selector = selector;
