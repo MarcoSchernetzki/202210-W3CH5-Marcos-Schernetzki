@@ -1,5 +1,5 @@
 import { Component } from './component.js';
-import { Menu } from './header.main.js';
+import { Main } from './header.main.js';
 
 export class Header extends Component {
     template: string;
@@ -7,7 +7,7 @@ export class Header extends Component {
         super();
         this.template = this.createTemplate();
         this.renderAdd(this.selector, this.template);
-        new Menu('header>slot');
+        new Main('header>slot');
     }
     createTemplate() {
         return `
