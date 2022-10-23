@@ -1,6 +1,5 @@
 import { PokeApi } from '../services/poke.api.js';
 import { Component } from './component.js';
-// import { Pagination } from './pagination.js';
 
 export class PokemonList extends Component {
     template!: string;
@@ -20,23 +19,28 @@ export class PokemonList extends Component {
     }
 
     async startFetch() {
-        this.pokes = await this.api.getPoke();
+        if (!this.pokes) {
+            this.pokes = await this.api.getPoke();
 
-        const pokeArray: any = [];
+            const pokeArray: any = [];
 
-        this.pokes.results.forEach((item: any) => {
-            pokeArray.push(item.url);
-        });
+            this.pokes.results.forEach((item: any) => {
+                pokeArray.push(item.url);
+            });
 
-        this.pokesInfo = await Promise.all(
-            pokeArray.map((url: any) =>
-                fetch(url).then((result) => result.json())
-            )
-        );
+            this.pokesInfo = await Promise.all(
+                pokeArray.map((url: any) =>
+                    fetch(url).then((result) => result.json())
+                )
+            );
+        }
+        this.nextFetch();
+        this.previousFetch();
+        this.manageComponent();
+    }
 
-        //------------------------------------------------------------------------
+    async nextFetch() {
         this.nextPageInfo = await this.api.getNextPage(this.pokes.next);
-
         const nextPokeArray: any = [];
 
         this.nextPageInfo.results.forEach((item: any) => {
@@ -48,7 +52,9 @@ export class PokemonList extends Component {
                 fetch(url).then((result) => result.json())
             )
         );
-        //------------------------------------------------------------------------
+    }
+
+    async previousFetch() {
         this.previousPageInfo = await this.api.getPreviousPage(
             this.pokes.previous
         );
@@ -64,28 +70,29 @@ export class PokemonList extends Component {
                 fetch(url).then((result) => result.json())
             )
         );
-
-        this.manageComponent();
     }
 
     manageComponent() {
         this.template = this.createTemplate(this.pokesInfo);
-        this.renderAdd(this.selector, this.template);
+        this.render(this.selector, this.template);
 
         document.querySelector('.btn-next')?.addEventListener('click', () => {
-            console.log(this.nextPagePokes);
             this.template = this.createTemplate(this.nextPagePokes);
             this.render(this.selector, this.template);
+            this.pokes.next = this.nextPageInfo.next;
+            this.pokesInfo = this.nextPagePokes;
             this.startFetch();
         });
 
         document
             .querySelector('.btn-previous')
             ?.addEventListener('click', () => {
-                // this.pokes.next = this.pokes.previous;
                 this.template = this.createTemplate(this.previousPagePokes);
                 this.render(this.selector, this.template);
+                this.pokes.previous = this.previousPageInfo.previous;
+                this.pokesInfo = this.previousPagePokes;
                 this.startFetch();
+                this.manageComponent();
             });
     }
 
