@@ -16,6 +16,13 @@ export class PokeApi {
         return fetch(nextUrl).then((response) => response.json());
     }
 
+    getPreviousPage(previousUrl: string): Promise<any> {
+        if (!previousUrl) {
+            return this.getPoke();
+        }
+        return fetch(previousUrl).then((response) => response.json());
+    }
+
     // manageComponent() {
     //     this.template = this.createTemplate();
     //     this.renderAdd(this.selector, this.template);

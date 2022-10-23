@@ -9,6 +9,8 @@ export class PokemonList extends Component {
     pokesInfo: Array<any>;
     nextPageInfo: any;
     nextPagePokes: any;
+    previousPageInfo: any;
+    previousPagePokes: any;
     constructor(public selector: string) {
         super();
         this.api = new PokeApi();
@@ -19,6 +21,7 @@ export class PokemonList extends Component {
 
     async startFetch() {
         this.pokes = await this.api.getPoke();
+
         const pokeArray: any = [];
 
         this.pokes.results.forEach((item: any) => {
@@ -45,6 +48,22 @@ export class PokemonList extends Component {
                 fetch(url).then((result) => result.json())
             )
         );
+        //------------------------------------------------------------------------
+        this.previousPageInfo = await this.api.getPreviousPage(
+            this.pokes.previous
+        );
+
+        const previousPokeArray: any = [];
+
+        this.previousPageInfo.results.forEach((item: any) => {
+            previousPokeArray.push(item.url);
+        });
+
+        this.previousPagePokes = await Promise.all(
+            previousPokeArray.map((url: any) =>
+                fetch(url).then((result) => result.json())
+            )
+        );
 
         this.manageComponent();
     }
@@ -57,7 +76,17 @@ export class PokemonList extends Component {
             console.log(this.nextPagePokes);
             this.template = this.createTemplate(this.nextPagePokes);
             this.render(this.selector, this.template);
+            this.startFetch();
         });
+
+        document
+            .querySelector('.btn-previous')
+            ?.addEventListener('click', () => {
+                // this.pokes.next = this.pokes.previous;
+                this.template = this.createTemplate(this.previousPagePokes);
+                this.render(this.selector, this.template);
+                this.startFetch();
+            });
     }
 
     createTemplate(array: Array<any>) {
@@ -73,7 +102,7 @@ export class PokemonList extends Component {
         this.template += `</div>
          <div>
         <button class="btn-previous">
-         <a href=''>Atras</a>
+              Atras
         </button>
                           
         <button class="btn-next">
